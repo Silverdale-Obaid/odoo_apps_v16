@@ -1,0 +1,78 @@
+<odoo>
+  <data>
+
+    <!--<record model="ir.ui.view" id="myacademy.list">
+      <field name="name">myacademy list</field>
+      <field name="model">myacademy.student</field>
+      <field name="arch" type="xml">
+        <tree>
+          <field name="name"/>
+          <field name="value"/>
+          <field name="value2"/>
+        </tree>
+      </field>
+    </record>-->
+        <menuitem name="Academy" id="myacademy.menu_root"/>
+
+    <!-- menu categories -->
+
+    <menuitem name="MyAcademy" id="myacademy.menu" parent="myacademy.menu_root"/>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <record model="ir.actions.act_window" id="myacademy.fee_action_window">
+      <field name="name">Course Invoice</field>
+      <field name="res_model">myacademy.courseinvoice</field>
+      <field name="view_mode">tree,form</field>
+    </record>
+
+
+
+
+
+
+    <!-- server action to the one above -->
+<!--
+    <record model="ir.actions.server" id="myacademy.action_server">
+      <field name="name">myacademy server</field>
+      <field name="model_id" ref="model_myacademy_myacademy"/>
+      <field name="state">code</field>
+      <field name="code">
+        action = {
+          "type": "ir.actions.act_window",
+          "view_mode": "tree,form",
+          "res_model": model._name,
+        }
+      </field>
+    </record>
+-->
+
+    <!-- Top menu item -->
+
+
+
+    <!-- actions -->
+<!--
+    <menuitem name="List" id="myacademy.menu_1_list" parent="myacademy.menu_1"
+              action="myacademy.action_window"/>
+    <menuitem name="Server to list" id="myacademy" parent="myacademy.menu_2"
+              action="myacademy.action_server"/>
+-->
+  </data>
+</odoo>

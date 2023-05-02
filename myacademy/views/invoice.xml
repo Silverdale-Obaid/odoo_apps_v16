@@ -1,0 +1,232 @@
+<odoo>
+    <data>
+
+        <!--    tree view-->
+        <record model="ir.ui.view" id="myacademy_invoice_tree_view">
+            <field name="name">myacademy.invoice.tree.view</field>
+            <field name="model">myacademy.invoice</field>
+            <field name="arch" type="xml">
+                <tree string="Invoices">
+                    <field name="invoice_number"/>
+                    <field name="date"/>
+                    <field name="amount" sum="Total"/>
+                    <field name="payment_status"/>
+                    <field name="due_date"/>
+                    <field name="payment_method"/>
+
+
+                </tree>
+            </field>
+        </record>
+
+        !--form view-->
+        <record model="ir.ui.view" id="myacademy_nvoice_form_view">
+            <field name="name">myacademy.invoice.form.view</field>
+            <field name="model">myacademy.invoice</field>
+            <field name="arch" type="xml">
+                <form string="Invoice Form">
+                    <header>
+                        <button id="button_paid" name="action_paid" string="Mark as Done" class="btn-primary"
+                                fee_status="unpaid"
+                                type="object"/>
+                        <button id="button_late" name="action_late" string="Mark as Late" class="btn-primary"
+                                fee_status="unpaid" type="object"/>
+                        <field name="fee_status" widget="statusbar" statusbar_visible="unpaid,paid,late"
+                               options="{'clickable':'1'}"/>
+                    </header>
+                    <sheet>
+
+                        <div class="oe_title">
+                            <label for="student_id" class="oe_edit_only" string="Student Name"/>
+                            <h1>
+                                <field name="student_id" options="{'no_create': True}"/>
+                            </h1>
+                        </div>
+                        <button id="fee_payment" name="fee_payment" string="Pay Your Fee Online" class="btn-success float-end"
+                                type="object"
+                                attrs="{'invisible':['|',('payment_method','=','cash'),('payment_method','=','check')]}"/>
+                        <group>
+                            <group>
+
+                                <field name="payment_status"/>
+                                <field name="date"/>
+                                <field name="due_date"/>
+                                <field name="payment_method"/>
+                                <field name="sender_name" attrs="{'invisible':['|',('payment_method','=','cash'),('payment_method','=','online')],
+                                'required':[('payment_method','=','check')]}"/>
+                                <field name="check_no" attrs="{'invisible':['|',('payment_method','=','cash'),('payment_method','=','online')],
+                                'required':[('payment_method','=','check')]}"/>
+
+
+                            </group>
+
+
+                            <div class="oe_title">
+                                <label for="amount" class="oe_edit_only" string="Total Fee"/>
+
+                                <h1>
+
+                                    <field name="amount" string="Total Fee"/>
+                                </h1>
+                            </div>
+
+
+                        </group>
+                        <notebook string="Student Notebook">
+                            <page string="Courses">
+                                <field name="course_ids">
+                                    <tree>
+                                        <field name="name"/>
+                                        <field name="duration"/>
+                                        <field name="class_name"/>
+                                        <field name="fees" sum="Total"/>
+                                        <field name="start_date"/>
+                                    </tree>
+                                </field>
+
+                            </page>
+                            <!--                            <page string="Fee">-->
+                            <!--                                <field name="invoice_ids"/>-->
+                            <!--                            </page>-->
+                        </notebook>
+                    </sheet>
+                    <div class="oe_chatter">
+                        <field name="message_follower_ids"/>
+                        <field name="activity_ids"/>
+                        <field name="message_ids"/>
+                    </div>
+                </form>
+            </field>
+        </record>
+
+
+        <!--        Search View-->
+
+        <record model="ir.ui.view" id="myacademy_invoice_search_view">
+            <field name="name">myacademy.invoice.search.view</field>
+            <field name="model">myacademy.invoice</field>
+            <field name="arch" type="xml">
+                <search string="Search Course">
+                    <field name="payment_status" string="Payment Status"/>
+
+
+                    <filter string="Fee Paid" name="payment_status" domain="[('payment_status', '=', 'paid')]"/>
+                    <filter string="Fee not Paid" name="payment_status" domain="[('payment_status', '=', 'unpaid')]"/>
+                    <filter string="Late" name="payment_status" domain="[('payment_status', '=', 'late')]"/>
+
+
+                    <separator/>
+
+
+                    <group expand="0" string="Group By">
+                        <filter name="payment_status" string="Fee Status" domain="[]"
+                                context="{'group_by':'payment_status'}"/>
+                        <filter name="payment_method" string="Payment Method" domain="[]"
+                                context="{'group_by':'payment_method'}"/>
+                    </group>
+
+
+                    <!-- Add other filters as needed -->
+                </search>
+            </field>
+        </record>
+
+        <!--        for report generating-->
+        <record id="report_invoice" model="ir.actions.report">
+            <field name="name">Invoice</field>
+            <field name="model">myacademy.invoice</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">myacademy.fee1</field>
+            <field name="report_file">myacademy.fee1</field>
+            <field name="binding_model_id" ref="model_myacademy_invoice"/>
+            <field name="binding_type">report</field>
+        </record>
+
+        <template id="fee1">
+            <t t-call="web.html_container">
+                <t t-foreach="docs" t-as="doc">
+                    <t t-call="web.external_layout">
+                        <div class="page">
+                            <h1 t-foreach="doc.student_id" t-as="student">
+                                <td class="text-left">
+                                    <span t-field="student.name"/>
+                                </td>
+                            </h1>
+                            <div class="content">
+                                <div>
+                                    <table class="table table-sm" width="50%">
+                                        <tr>
+                                            <th class="text-left" style="width: 20%">Challan Number</th>
+                                            <td class="text-center" style="width: 30%;">
+                                                <span t-field="doc.invoice_number"/>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <th class="text-left" style="width: 20%">Amount</th>
+                                            <td class="text-center" style="width: 30%;">
+                                                <span t-field="doc.amount"/>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <th class="text-left" style="width: 20%">Payment Status</th>
+                                            <td class="text-center" style="width: 30%;">
+                                                <span t-field="doc.payment_status"/>
+                                            </td>
+                                        </tr>
+
+                                        <tr>
+                                            <th class="text-left" style="width: 20%">Payment Method</th>
+                                            <td class="text-center" style="width: 30%;">
+                                                <span t-field="doc.payment_method"/>
+                                            </td>
+                                        </tr>
+                                        <br/>
+
+
+                                    </table>
+                                </div>
+                                <hr/>
+                                <br/>
+                                <!--                                <h1>Student Name: <field name="doc.name"/> </h1>-->
+
+
+                                <h2 style="background-color: black; color:white; text-align:center">Courses</h2>
+                                <table class="table table-sm">
+                                    <thead>
+                                        <tr>
+                                            <th>Name</th>
+                                            <th>Fee</th>
+                                            <th>Duration</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr t-foreach="doc.course_ids" t-as="course">
+                                            <td class="text-left">
+                                                <span t-field="course.name"/>
+                                            </td>
+                                            <td class="text-left">
+                                                <span t-field="course.fees"/>
+                                            </td>
+                                            <td class="text-left">
+                                                <span t-field="course.duration"/>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+
+
+                            </div>
+                        </div>
+                    </t>
+                </t>
+            </t>
+        </template>
+        <record model="ir.actions.act_window" id="myacademy.fee_action_window">
+            <field name="name">Invoices</field>
+            <field name="res_model">myacademy.invoice</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+        <menuitem name="Fee" id="myacademy.fee" parent="myacademy.menu_root" action="myacademy.fee_action_window"/>
+    </data>
+</odoo>

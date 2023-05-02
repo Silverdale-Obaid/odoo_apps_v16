@@ -1,0 +1,175 @@
+<odoo>
+    <data>
+
+        <!--      tree view-->
+
+        <record model="ir.ui.view" id="myacademy_tutor_tree_view">
+            <field name="name">myacademy.tutor.tree.view</field>
+            <field name="model">myacademy.tutor</field>
+            <field name="arch" type="xml">
+                <tree string="Students">
+                    <field name="name" optional="show"/>
+                    <field name="contact_details" optional="show"/>
+                    <field name="course_ids" widget="many2many_tags" options="{'color_field':'color'}"/>
+                    <field name="qualification" optional="show"/>
+                    <field name="experience" optional="hide"/>
+                    <field name="salary"/>
+                    <!--                <field name="course_ids" widget="many2many_tags" optional="hide"/>-->
+
+
+                </tree>
+            </field>
+        </record>
+
+
+        <!--      form view-->
+
+        <record model="ir.ui.view" id="myacademy_tutor_form_view">
+            <field name="name">myacademy.tutor.form.view</field>
+            <field name="model">myacademy.tutor</field>
+            <field name="arch" type="xml">
+                <form string="Tutor Form">
+                    <sheet>
+                        <field name="image_medium" widget='image' class="oe_avatar"/>
+                        <div class="oe_title">
+                            <label for="name" class="oe_edit_only" string="Tutor Name"/>
+                            <h1>
+                                <field name="name" default_focus="1"/>
+                            </h1>
+                        </div>
+                        <group>
+
+                            <group>
+
+                                <field name="contact_details"/>
+                                <field name="qualification"/>
+
+                            </group>
+                            <group>
+                                <field name="salary"/>
+
+                                <field name="experience"/>
+                                <field name="course_ids" widget="many2many_tags"/>
+                            </group>
+                        </group>
+                    </sheet>
+                    <div class="oe_chatter">
+                        <field name="message_follower_ids"/>
+                        <field name="activity_ids"/>
+                        <field name="message_ids"/>
+                    </div>
+
+                </form>
+            </field>
+        </record>
+
+        <!--        kanban view-->
+
+        <record model="ir.ui.view" id="myacademy_tutor_kanban">
+            <field name="name">myacademy.tutor.kanban</field>
+            <field name="model">myacademy.tutor</field>
+            <field name="arch" type="xml">
+                <kanban class="box">
+
+                    <field name="id"/>
+                    <field name="name"/>
+                    <field name="contact_details"/>
+                    <field name="qualification"/>
+                    <field name="experience"/>
+                    <field name="course_ids"/>
+                    <field name="image_medium"/>
+
+                    <templates>
+
+                        <t t-name="kanban-box">
+
+                            <div t-attf-class="oe_kanban_global_click">
+
+
+                                <div class="o_kanban_image">
+                                    <img alt="Avatar"
+                                         t-att-src="kanban_image('myacademy.tutor', 'image_medium', record.id.raw_value)"/>
+
+                                </div>
+                                <div class="oe_kanban_details box2">
+                                    <ul>
+
+                                        <li class="mb4">
+                                            <h2 class="kanban_h2">
+                                                <field name="name"/>
+                                            </h2>
+                                        </li>
+                                        <li class="float-right mb4">
+                                            <strong>Contact:</strong>
+                                            <field name="contact_details"/>
+                                        </li>
+                                        <li>
+                                            <strong>Courses:</strong>
+                                            <field name="course_ids"/>
+                                        </li>
+                                        <li class="float-end kanban_classname">
+                                            <strong>Qualification:</strong>
+                                            <field name="qualification"/>
+                                        </li>
+                                        <br/>
+                                        <hr/>
+
+                                        <div class="Kanban_experience">
+                                            <strong>Experience:</strong>
+                                            <field name="experience"/>
+                                            <strong>years</strong>
+                                        </div>
+
+                                    </ul>
+                                </div>
+                            </div>
+                        </t>
+
+                    </templates>
+                </kanban>
+            </field>
+        </record>
+
+
+        <!--      Search View-->
+        <record model="ir.ui.view" id="myacademy_tutor_search_view">
+            <field name="name">myacademy.tutor.search.view</field>
+            <field name="model">myacademy.tutor</field>
+            <field name="arch" type="xml">
+                <search string="Search Course">
+                    <field name="name" string="Tutor Name"/>
+
+
+                    <filter string="BS Qualified" name="Qualification" domain="[('qualification', '=', 'BS')]"/>
+                    <filter string="MS Qualified" name="Qualification" domain="[('qualification', '=', 'MS')]"/>
+                    <filter string="PhD " name="Qualification" domain="[('qualification', '=', 'PhD')]"/>
+
+
+                    <separator/>
+
+
+                    <group expand="0" string="Group By">
+                        <filter name="Qualification" string="Qualification" domain="[]"
+                                context="{'group_by':'qualification'}"/>
+                        <filter name="Experience" string="Experience" domain="[]"
+                                context="{'group_by':'experience'}"/>
+                    </group>
+
+
+
+                </search>
+            </field>
+        </record>
+
+
+        <record model="ir.actions.act_window" id="myacademy.tutor_action_window">
+            <field name="name">Tutor</field>
+            <field name="res_model">myacademy.tutor</field>
+            <field name="view_mode">tree,form,kanban</field>
+        </record>
+
+
+        <menuitem name="Tutor" id="myacademy.tutor" parent="myacademy.menu_root"
+                  action="myacademy.tutor_action_window"/>
+    </data>
+</odoo>

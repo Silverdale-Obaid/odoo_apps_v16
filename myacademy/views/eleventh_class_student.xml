@@ -1,0 +1,16 @@
+<odoo>
+    <data>
+
+        <record model="ir.actions.act_window" id="myacademy.student11_action_window">
+            <field name="name">Class 11th Students</field>
+            <field name="res_model">myacademy.student</field>
+            <field name="context">{'default_class_name':'11th'}</field>
+            <field name="domain">[('class_name','=','11th')]</field>
+
+
+            <field name="view_mode">tree,form,kanban</field>
+        </record>
+        <menuitem name="11th" id="myacademy.student_eleven" parent="myacademy.student_menu"
+                  action="myacademy.student11_action_window"/>
+    </data>
+</odoo>

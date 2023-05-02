@@ -1,0 +1,249 @@
+<odoo>
+    <data>
+        <!-- explicit list view definition -->
+        <!--
+            <record model="ir.ui.view" id="silver_a.list">
+              <field name="name">silverA list</field>
+              <field name="model">silver_a.silver_a</field>
+              <field name="arch" type="xml">
+                <tree>
+                  <field name="name"/>
+                  <field name="value"/>
+                  <field name="value2"/>
+                </tree>
+              </field>
+            </record>
+        -->
+        <record model="ir.ui.view" id="silver_a_tree_view">
+            <field name="name">silver_a.course.tree</field>
+            <field name="model">silver_a.course</field>
+            <field name="priority" eval="16"/>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="name"/>
+                    <field name="description"/>
+                </tree>
+
+            </field>
+        </record>
+
+
+        <record model="ir.ui.view" id="silver_a_form_view">
+            <field name="name">silver_a.course.form</field>
+            <field name="model">silver_a.course</field>
+            <field name="priority" eval="16"/>
+            <field name="arch" type="xml">
+                <sheet>
+                    <form>
+
+                        <div class="oe_title">
+                            <label for="name" class="oe_edit_only" string="Subject Name"/>
+                            <h1>
+                                <field name="name"/>
+                            </h1>
+                        </div>
+                        <group>
+                            <field name="resposible_id"/>
+                        </group>
+                        <notebook>
+
+                            <page string="Sessions">
+                                <field name="session_ids">
+                                    <tree>
+                                        <field name="course_id"/>
+                                        <field name="name"/>
+                                        <field name="instructor_id"/>
+                                        <field name="start_date"/>
+                                        <field name="duration"/>
+                                        <field name="seats"/>
+                                    </tree>
+                                    <form>
+                                        <group>
+                                            <group>
+                                                <field name="course_id"/>
+                                                <field name="name"/>
+                                                <field name="instructor_id"/>
+                                            </group>
+                                            <group>
+                                                <field name="start_date"/>
+                                                <field name="duration"/>
+                                                <field name="seats"/>
+                                            </group>
+                                        </group>
+                                    </form>
+                                </field>
+                            </page>
+
+
+                            <page string="Description">
+                                <field name="description"/>
+
+                            </page>
+                        </notebook>
+
+
+                    </form>
+                </sheet>
+
+
+            </field>
+        </record>
+
+
+        <record model="ir.ui.view" id="silver_a_search_view">
+            <field name="name">silver_a.course.search</field>
+            <field name="model">silver_a.course</field>
+            <field name="priority" eval="16"/>
+            <field name="arch" type="xml">
+                <search>
+                    <field name="name"/>
+                    <field name="description"/>
+                </search>
+
+            </field>
+        </record>
+
+
+        <record model="ir.ui.view" id="session_tree_view">
+            <field name="name">session.tree</field>
+            <field name="model">silver_a.session</field>
+            <field name="arch" type="xml">
+                <tree string="Session Tree" decoration-bf="duration&lt;5" decoration-it="duration&gt;15" multi_edit="1">
+                    <field name="name"/>
+                    <!--
+                                        <field name="course_id"/>
+                    -->
+                    <field name="start_date"/>
+                    <field name="duration"/>
+                    <!-- <field name="end_date"/>-->
+                    <field name="seats" widget="progressbar"/>
+                </tree>
+            </field>
+        </record>
+
+
+        <record model="ir.ui.view" id="session_form_view">
+            <field name="name">session.form</field>
+            <field name="model">silver_a.session</field>
+            <field name="arch" type="xml">
+                <form string="Session Form">
+                    <!--  <header>
+                          <button name="action_send_session_by_email" type="object" class="oe_highlight" string="Send Email"/>
+                      </header>-->
+                    <sheet>
+                        <!-- <field name="image_1920" widget="image" class="oe_avatar" options="{'preview_image': 'image_1920', 'zoom': true, 'zoom_delay': 1000}"/>-->
+                        <group>
+                            <group string="General">
+                                <field name="course_id"/>
+                                <field name="name"/>
+                                <field name="instructor_id" domain="[('instructor','=',True)]"/>
+                                <field name="taken_seats" widget="progressbar"/>-
+                                <!-- <field name="country_id"/>-->
+                                <!--  <field name="active"/>-->
+                            </group>
+                            <group string="Schedule">
+                                <field name="start_date"/>
+                                <field name="duration"/>
+                                <field name="seats"/>
+                                <!-- <field name="taken_seats" widget="progressbar"/>-->
+                                <!--<field name="company_id" groups="base.group_multi_company"/>-->
+                                <field name="attendee_ids" widget="many2many_tags"/>
+                            </group>
+                        </group>
+                        <notebook>
+                            <page string="Attendees">
+                                <field name="attendee_ids"/>
+                            </page>
+                        </notebook>
+                        <!-- <label for="attendee_ids"/>
+                         <field name="attendee_ids" domain="[('country_id', '=', country_id)]"/>-->
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record model="ir.actions.act_window" id="session_list_action">
+            <field name="name">Sessions</field>
+            <field name="res_model">silver_a.session</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+
+        <!-- actions opening views on models -->
+
+        <record model="ir.actions.act_window" id="course_list_action">
+            <field name="name">Courses</field>
+            <field name="res_model">silver_a.course</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+
+        <!-- server action to the one above -->
+        <!--
+            <record model="ir.actions.server" id="silver_a.action_server">
+              <field name="name">silverA server</field>
+              <field name="model_id" ref="model_silver_a_silver_a"/>
+              <field name="state">code</field>
+              <field name="code">
+                action = {
+                  "type": "ir.actions.act_window",
+                  "view_mode": "tree,form",
+                  "res_model": model._name,
+                }
+              </field>
+            </record>
+        -->
+
+        <!-- Top menu item -->
+
+        <menuitem name="silverA" id="silver_a.menu_root" sequence="10"/>
+        <menuitem name="Courses" id="Courses_menu" parent="silver_a.menu_root"
+                  action="course_list_action" sequence="10"/>
+
+        <menuitem name="Sessions" id="Session_menu" parent="silver_a.menu_root"
+                  action="session_list_action" sequence="11"/>
+        <!-- menu categories -->
+
+
+        <!-- actions -->
+
+
+        -->
+
+
+        <record id="report_course" model="ir.actions.report">
+            <field name="name">Course</field>
+            <field name="model">silver_a.course</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">silver_a.course1</field>
+            <field name="report_file">silver_a.course1</field>
+            <field name="binding_model_id" ref="model_silver_a_course"/>
+            <field name="binding_type">report</field>
+        </record>
+        <template id="course1">
+            <t t-call="web.html_container">
+                <h1>Course Details</h1>
+                <t t-foreach="docs" t-as="o">
+                    <h4>Name :<t t-esc="o.name"/>.
+                    </h4>
+                    <h4>Responsible :<t t-esc="o.resposible_id.name"/>.
+                    </h4>
+                    <div>
+                        <h4>Session Details : name=
+                            <t t-esc="o.session_ids.name"/>
+                            <br/>
+                            <t t-esc="o.session_ids.start_date"/>
+                            <br/>
+                            <t t-esc="o.session_ids.duration"/>
+                            <br/>
+                            <t t-esc="o.session_ids.seats"/>
+                            <br/>
+                                                 </h4>
+                    </div>
+                    <h4>Description :<t t-esc="o.description"/>.
+                    </h4>
+                </t>
+            </t>
+        </template>
+    </data>
+</odoo>

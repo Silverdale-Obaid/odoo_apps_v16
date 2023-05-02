@@ -1,0 +1,313 @@
+<odoo>
+    <data>
+        <!--    tree view-->
+
+        <record model="ir.ui.view" id="myacademy_course_tree_view">
+            <field name="name">myacademy.course.tree.view</field>
+            <field name="model">myacademy.course</field>
+            <field name="arch" type="xml">
+                <tree string="Courses">
+                    <field name="name"/>
+                    <field name="description"/>
+                    <field name="duration"/>
+                    <field name="fees"/>
+
+                    <field name="tutors_ids" string="Teacher" widget="many2many_tags"/>
+                    <field name="start_date"/>
+                    <field name="color" widget="color_picker"/>
+                    <field name="end_date"/>
+
+                </tree>
+            </field>
+        </record>
+        <!--form view-->
+
+        <record model="ir.ui.view" id="tuition_course_form_view">
+            <field name="name">myacademy.course.form.view</field>
+            <field name="model">myacademy.course</field>
+            <field name="arch" type="xml">
+                <form string="Course Form">
+                    <sheet>
+
+
+                        <group>
+                            <group>
+                                <field name="name" default_focus="1"/>
+                                <field name="description"/>
+                                <field name="class_name"/>
+                                <field name="fees"/>
+                            </group>
+                            <group>
+                                <field name="start_date"/>
+                                <field name="end_date"/>
+                                <field name="duration"/>
+                                <field name="color" widget="color_picker"/>
+                            </group>
+                        </group>
+                        <notebook>
+                            <page string="Description of Course">
+                                <field name="description"/>
+                            </page>
+                            <page string="Students Enrolled in Course">
+                                <field name="student_ids">
+                                    <tree create="1">
+                                        <field name="name"/>
+                                        <field name="contact_details"/>
+                                        <field name="class_name"/>
+
+                                    </tree>
+                                </field>
+                            </page>
+                            <page string="Teachers teaching course">
+                                <field name="tutors_ids">
+                                    <tree create="0">
+                                        <field name="name"/>
+                                        <field name="contact_details"/>
+                                        <field name="qualification"/>
+                                        <field name="experience"/>
+                                    </tree>
+                                </field>
+                            </page>
+                        </notebook>
+                    </sheet>
+                    <div class="oe_chatter">
+                        <field name="message_follower_ids"/>
+                        <field name="activity_ids"/>
+                        <field name="message_ids"/>
+                    </div>
+                </form>
+            </field>
+        </record>
+        <!--        kanban view-->
+
+        <record model="ir.ui.view" id="myacademy_course_kanban">
+            <field name="name">myacademy.course.kanban</field>
+            <field name="model">myacademy.course</field>
+            <field name="arch" type="xml">
+                <kanban class="box">
+
+                    <field name="id"/>
+                    <field name="name"/>
+                    <field name="start_date"/>
+                    <field name="end_date"/>
+                    <field name="tutors_ids"/>
+                    <field name="color"/>
+
+                    <templates>
+
+                        <t t-name="kanban-box">
+
+                            <div t-attf-class="oe_kanban_global_click">
+
+                                <div class="oe_kanban_details box2">
+                                    <ul>
+
+                                        <li class="mb4">
+                                            <h2 class="kanban_h2">
+                                                <field name="name"/>
+                                            </h2>
+                                        </li>
+                                        <hr/>
+                                        <li class="float-right mb4">
+                                            <strong>Start Date:</strong>
+                                            <field name="start_date"/>
+                                        </li>
+                                        <li>
+                                            <strong>End Date:</strong>
+                                            <field name="end_date"/>
+                                        </li>
+                                        <div class="float-end">
+                                            <h4>
+                                                <strong>Tutor:</strong>
+                                                <field name="tutors_ids"/>
+                                            </h4>
+                                        </div>
+                                        <br/>
+                                        <hr/>
+
+
+                                    </ul>
+                                </div>
+                            </div>
+                        </t>
+
+                    </templates>
+                </kanban>
+            </field>
+        </record>
+
+
+        <record model="ir.ui.view" id="myacademy_course_search_view1">
+            <field name="name">myacademy.course.search.view</field>
+            <field name="model">myacademy.course</field>
+            <field name="arch" type="xml">
+                <search string="Search Courses">
+                    <field name="name" string="Name"/>
+                    <field name="tutors_ids" string="Teacher"/>
+                    <field name="class_name" string="Class"/>
+
+
+                    <filter string="Courses of Class 9" name="class_wise_courses"
+                            domain="[('class_name', '=', '9th')]"/>
+                    <filter string="Courses of Class 10" name="class_wise_courses"
+                            domain="[('class_name', '=', '10th')]"/>
+                    <filter string="Courses of Class 11" name="class_wise_courses"
+                            domain="[('class_name', '=', '11th')]"/>
+                    <filter string="Courses of Class 12" name="class_wise_courses"
+                            domain="[('class_name', '=', '12th')]"/>
+
+                    <separator/>
+
+                    <group expand="0" string="Group By">
+                        <filter name="class_name" string="Class" domain="[]" context="{'group_by':'class_name'}"/>
+                        <filter name="tutors_ids" string="Tutor" domain="[]" context="{'group_by':'tutors_ids'}"/>
+                    </group>
+
+
+                    <!-- Add other filters as needed -->
+                    <searchpanel>
+                        <field name="class_name" string="Class" icon="fa-users" select="multi" enable_counters="1"/>
+
+                    </searchpanel>
+
+                </search>
+            </field>
+        </record>
+
+
+        <!--        for report generating-->
+        <record id="report_course" model="ir.actions.report">
+            <field name="name">Course</field>
+            <field name="model">myacademy.course</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">myacademy.course1</field>
+            <field name="report_file">myacademy.course1</field>
+            <field name="binding_model_id" ref="model_myacademy_course"/>
+            <field name="binding_type">report</field>
+        </record>
+
+        <template id="course1">
+            <t t-call="web.html_container">
+                <t t-foreach="docs" t-as="doc">
+                    <t t-call="web.external_layout">
+                        <div class="page">
+                            <div class="header">
+                                <h1>Course Report</h1>
+                            </div>
+                            <div class="content">
+                                <div>
+                                    <h2 style="background-color: black; color:white; text-align:center">General
+                                        Information
+                                    </h2>
+                                    <table class="table table-condensed ">
+                                        <tr>
+                                            <th class="text-left" style="width: 20%">Name</th>
+                                            <td class="text-center" style="width: 30%;">
+                                                <span t-field="doc.name"/>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <th class="text-left" style="width: 20%">Description</th>
+                                            <td class="text-center" style="width: 30%;">
+                                                <span t-field="doc.description"/>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <th class="text-left" style="width: 20%">Duration</th>
+                                            <td class="text-center" style="width: 30%;">
+                                                <span t-field="doc.duration"/>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <th class="text-left" style="width: 20%">Fee</th>
+                                            <td class="text-center" style="width: 30%;">
+                                                <span t-field="doc.fees"/>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <th class="text-left" style="width: 20%">Start Date</th>
+                                            <td class="text-center" style="width: 30%;">
+                                                <span t-field="doc.start_date"/>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <th class="text-left" style="width: 20%">End Date</th>
+                                            <td class="text-center" style="width: 30%;">
+                                                <span t-field="doc.end_date"/>
+                                            </td>
+                                        </tr>
+
+                                    </table>
+                                </div>
+
+                                <br/>
+                                <h2 style="background-color: black; color:white; text-align:center">Tutors</h2>
+                                <table class="table table-sm">
+                                    <thead>
+                                        <tr>
+                                            <th>Name</th>
+                                            <th>Qualification</th>
+                                            <th>Experience</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr t-foreach="doc.tutors_ids" t-as="course">
+                                            <td class="text-left">
+                                                <span t-field="course.name"/>
+                                            </td>
+                                            <td class="text-left">
+                                                <span t-field="course.qualification"/>
+                                            </td>
+                                            <td class="text-left">
+                                                <span t-field="course.experience"/>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+
+                                <h2 style="background-color: black; color:white; text-align:center">Students enrolled in
+                                    Course
+                                </h2>
+                                <table class="table table-sm">
+                                    <thead>
+                                        <tr>
+                                            <th>Name</th>
+                                            <th>Contact Detail</th>
+                                            <th>Date of Birth</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr t-foreach="doc.student_ids" t-as="course">
+                                            <td class="text-left">
+                                                <span t-field="course.name"/>
+                                            </td>
+                                            <td class="text-left">
+                                                <span t-field="course.contact_details"/>
+                                            </td>
+                                            <td class="text-left">
+                                                <span t-field="course.dob"/>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+
+
+                            </div>
+                        </div>
+                    </t>
+                </t>
+            </t>
+        </template>
+
+
+        <record model="ir.actions.act_window" id="myacademy.course_action_window">
+            <field name="name">Courses</field>
+            <field name="res_model">myacademy.course</field>
+            <field name="view_mode">tree,form,kanban</field>
+        </record>
+
+        <menuitem name="Course" id="myacademy.course" parent="myacademy.menu_root"
+                  action="myacademy.course_action_window"/>
+
+    </data>
+</odoo>

@@ -1,0 +1,308 @@
+<odoo>
+    <data>
+
+        <!--    tree view-->
+
+        <record model="ir.ui.view" id="myacademy_student_tree_view">
+            <field name="name">myacademy.student.tree.view</field>
+            <field name="model">myacademy.student</field>
+            <field name="arch" type="xml">
+                <tree string="Students">
+                    <field name="name"/>
+                    <field name="contact_details"/>
+                    <field name="enrollment_status" optional="hide"/>
+                    <field name="course_ids" widget="many2many_tags" options="{'color_field':'color'}"/>
+                    <field name="dob"/>
+                    <field name="activity_ids" widget="list_activity" optional="hide"/>
+                    <field name="address" optional="hide"/>
+                    <!--                    <field name="course_ids" widget="many2many_tags" optional="hide"/>-->
+                    <!--                    <field name="invoice_ids"/>-->
+
+                </tree>
+            </field>
+        </record>
+
+        <!--        form view-->
+
+        <record model="ir.ui.view" id="myacademy_student_form_view">
+            <field name="name">myacademy.student.form.view</field>
+            <field name="model">myacademy.student</field>
+            <field name="arch" type="xml">
+                <form string="Student Form">
+                    <sheet>
+                        <field name="image_medium" widget='image' class="oe_avatar"/>
+                        <div class="oe_title">
+                            <label for="name" class="oe_edit_only" string="Student Name"/>
+                            <h1>
+                                <field name="name" default_focus="1"/>
+                            </h1>
+                        </div>
+                        <group>
+
+                            <group>
+
+                                <field name="contact_details"/>
+                                <field name="enrollment_status" />
+                            </group>
+                            <group>
+                                <field name="dob"/>
+                                <field name="address" placeholder="Enter your Address"/>
+
+                            </group>
+                            <group>
+                                 <field name="class_name"/>
+                            </group>
+                        </group>
+                        <notebook string="Student Notebook">
+                              <page string="Courses">
+                                <field name="course_ids">
+                                    <tree create="0">
+                                        <field name="name"/>
+                                        <field name="class_name"/>
+                                        <field name="start_date"/>
+                                        <field name="end_date"/>
+                                    </tree>
+                                </field>
+                            </page>
+                            <!--                            <page string="Fee">-->
+                            <!--                                <field name="invoice_ids"/>-->
+                            <!--                            </page>-->
+                        </notebook>
+                    </sheet>
+                    <div class="oe_chatter">
+                        <field name="message_follower_ids"/>
+                        <field name="activity_ids"/>
+                        <field name="message_ids"/>
+                    </div>
+
+                </form>
+            </field>
+        </record>
+
+        <!--        search view-->
+
+
+        <record model="ir.ui.view" id="myacademy_student_search_view">
+            <field name="name">myacademy.student.search.view</field>
+            <field name="model">myacademy.student</field>
+            <field name="arch" type="xml">
+                <search string="Search Students">
+                    <field name="name" string="Name"/>
+                    <field name="contact_details" string="Contact Details"/>
+                    <field name="class_name" string="Class"/>
+                    <field name="course_ids" string="Course"/>
+
+
+                    <filter string="Class 9th" name="class_wise_students" domain="[('class_name', '=', '9th')]"/>
+                    <filter string="Class 10th" name="class_wise_students" domain="[('class_name', '=', '10th')]"/>
+                    <filter string="Class 11th" name="class_wise_students" domain="[('class_name', '=', '11th')]"/>
+                    <filter string="Class 12th" name="class_wise_students" domain="[('class_name', '=', '12th')]"/>
+
+                    <separator/>
+                    <filter string="Active Students" name="active_students"
+                            domain="[('enrollment_status', '=', 'active')]"/>
+
+                    <group expand="0" string="Group By">
+                        <filter name="class_name" string="Class" domain="[]" context="{'group_by':'class_name'}"/>
+                        <filter name="enrollment_status" string="Enrolled Status" domain="[]"
+                                context="{'group_by':'enrollment_status'}"/>
+                    </group>
+                    <searchpanel>
+                        <field name="class_name" string="Class" icon="fa-users" select="multi" enable_counters="1"/>
+
+                    </searchpanel>
+
+
+                    <!-- Add other filters as needed -->
+                </search>
+            </field>
+        </record>
+
+
+        <!--        kanban view-->
+
+        <record model="ir.ui.view" id="myacademy_student_kanban">
+            <field name="name">myacademy.student.kanban</field>
+            <field name="model">myacademy.student</field>
+            <field name="arch" type="xml">
+                <kanban class="box">
+
+                    <field name="id"/>
+                    <field name="name"/>
+                    <field name="contact_details"/>
+                    <field name="enrollment_status"/>
+                    <field name="dob"/>
+                    <field name="address"/>
+                    <field name="image_medium"/>
+
+                    <templates>
+
+                        <t t-name="kanban-box">
+
+                            <div t-attf-class="oe_kanban_global_click">
+
+
+                                <div class="o_kanban_image">
+                                    <img alt="Avatar"
+                                         t-att-src="kanban_image('myacademy.student', 'image_medium', record.id.raw_value)"/>
+
+                                </div>
+                                <div class="oe_kanban_details box2">
+                                    <ul>
+
+                                        <li class="mb4">
+                                            <h2 class="kanban_h2">
+                                                <field name="name"/>
+                                            </h2>
+                                        </li>
+                                        <hr/>
+                                        <li class="float-right mb4">
+                                            <strong>Contact:</strong>
+                                            <field name="contact_details"/>
+                                        </li>
+                                        <li>
+                                            <strong>Date of Birth:</strong>
+                                            <field name="dob"/>
+                                        </li>
+                                        <li class="float-end kanban_classname">
+                                            <strong>Class:</strong>
+                                            <field name="class_name"/>
+                                        </li>
+
+                                        <li>
+                                            <field name="enrollment_status" class="kanban_enroll"/>
+                                        </li>
+                                        <li>
+                                            <field name="address" class="text-muted float-end"/>
+                                        </li>
+
+                                    </ul>
+                                </div>
+                            </div>
+                        </t>
+
+                    </templates>
+                </kanban>
+            </field>
+        </record>
+        <!--   Activity View-->
+
+        <record id="view_myacademy_student_activity" model="ir.ui.view">
+            <field name="name">myacademy.student.activity</field>
+            <field name="model">myacademy.student</field>
+            <field name="arch" type="xml">
+                <activity string="Student">
+                    <field name="id"/>
+                    <field name="name"/>
+                    <templates>
+                        <div t-name="activity-box">
+                            <img t-att-src="activity_image('image_medium', 'image_medium', record.id.raw_value)"
+                                 role="img" t-att-title="record.id.value" t-att-alt="record.id.value"/>
+                            <div>
+                                <field name="name" display="full"/>
+                            </div>
+                        </div>
+                    </templates>
+                </activity>
+            </field>
+        </record>
+
+
+        <!--        for report generating-->
+        <record id="report_student" model="ir.actions.report">
+            <field name="name">Student</field>
+            <field name="model">myacademy.student</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">myacademy.student1</field>
+            <field name="report_file">myacademy.student1</field>
+            <field name="binding_model_id" ref="model_myacademy_student"/>
+            <field name="binding_type">report</field>
+        </record>
+
+        <template id="student1">
+            <t t-call="web.html_container">
+                <t t-foreach="docs" t-as="doc">
+                    <t t-call="web.external_layout">
+                        <div class="page">
+                            <div class="header">
+                                <h1>Student Report</h1>
+                            </div>
+                            <div class="content">
+                                <div>
+                                    <h2 style="background-color: black; color:white; text-align:center">General
+                                        Information
+                                    </h2>
+                                    <table class="table table-sm">
+                                        <tr>
+                                            <th class="text-left" style="width: 20%">Name</th>
+                                            <td class="text-center" style="width: 30%;">
+                                                <span t-field="doc.name"/>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <th class="text-left" style="width: 20%">Contact</th>
+                                            <td class="text-center" style="width: 30%;">
+                                                <span t-field="doc.contact_details"/>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <th class="text-left" style="width: 20%">Class</th>
+                                            <td class="text-center" style="width: 30%;">
+                                                <span t-field="doc.class_name"/>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <th class="text-left" style="width: 20%">Date of Birth</th>
+                                            <td class="text-center" style="width: 30%;">
+                                                <span t-field="doc.dob"/>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </div>
+
+                                <br/>
+                                <h2 style="background-color: black; color:white;text-align:center">Courses</h2>
+                                <table class="table table-sm">
+                                    <thead>
+                                        <tr>
+                                            <th>Name</th>
+                                            <th>Duration</th>
+                                            <th>Fee</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr t-foreach="doc.course_ids" t-as="course">
+                                            <td class="text-left">
+                                                <span t-field="course.name"/>
+                                            </td>
+                                            <td class="text-left">
+                                                <span t-field="course.duration"/>
+                                            </td>
+                                            <td class="text-left">
+                                                <span t-field="course.fees"/>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+
+
+                            </div>
+                        </div>
+                    </t>
+                </t>
+            </t>
+        </template>
+
+
+        <record model="ir.actions.act_window" id="myacademy.all_student_action_window">
+            <field name="name">Students</field>
+            <field name="res_model">myacademy.student</field>
+            <field name="view_mode">tree,form,kanban,activity</field>
+        </record>
+        <menuitem name="Student" id="myacademy.student_menu" parent="myacademy.menu_root"/>
+
+        <menuitem name="All Students" id="myacademy.all_student_menu" parent="myacademy.student_menu"
+                  action="myacademy.all_student_action_window" sequence="0"/>
+
+    </data>
+</odoo>

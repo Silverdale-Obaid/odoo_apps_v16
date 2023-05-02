@@ -1,0 +1,27 @@
+.kanban_h2{
+ color:blue;
+}
+
+.box{
+background-image:url("https://c4.wallpaperflare.com/wallpaper/532/676/918/surface-network-light-background-wallpaper-preview.jpg");
+background-repeat:no-repeat;
+background-size:100% 100%;
+
+background-color:silver;
+}
+.box2{
+}
+.kanban_enroll{
+font-size:15px;
+Color:green
+
+}
+.kanban_classname{
+color:purple;
+}
+.Kanban_experience{
+float:right;
+}
+h2{
+color:red;
+}
